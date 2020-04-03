@@ -15,6 +15,8 @@ import {
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
+import firebase from '../../../enviroments/firebase-enviroment';
+
 const schema = {
   firstName: {
     presence: { allowEmpty: false, message: 'is required' },
@@ -187,7 +189,16 @@ const SignUp = props => {
 
   const handleSignUp = event => {
     event.preventDefault();
-    history.push('/');
+    firebase.auth().createUserWithEmailAndPassword( formState.values.email, formState.values.password ).then(
+      (user) => {
+        history.push(`/${user.credential.providerId}`);
+      }
+    ).catch(
+      (error) => {
+        console.log(error.message);
+      }
+    );
+    
   };
 
   const hasError = field =>

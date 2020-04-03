@@ -14,7 +14,7 @@ import {
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { login, logout } from '../../utils/auth';
 
-import firebase from "firebase/app";
+import firebase from '../../../enviroments/firebase-enviroment';
 
 import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
@@ -193,7 +193,15 @@ const SignIn = props => {
   }
   const handleSignIn = event => {
     event.preventDefault();
-    history.push('/');
+    firebase.auth()
+      .signInWithEmailAndPassword( formState.values.email, formState.values.password )
+      .then((user) => {history.push(`/${user.credential.providerId}`); 
+      /*O user.credential.providerId é a credencial do usuário no sistema
+      Quando autenticado o providerId terá que ser utilizado para direcionar ao 
+      dashboard correspodente ao nível de acesso o Usuário!
+    */})
+      .catch((error) => {console.log(error.message);});
+   
   };
 
   const hasError = field =>
